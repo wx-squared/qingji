@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="个人消费记录工具" />
+    <title>轻记 | 个人消费记录</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+    <style>.danger-button{color:#c45449}.brand-mark{background:#d1f4a2;color:#145549;border-radius:8px;width:30px;height:30px;position:relative;display:block}.brand-mark:before{content:"";position:absolute;left:8px;top:6px;width:11px;height:15px;border:2px solid #145549;border-radius:2px}.brand-mark:after{content:"";position:absolute;left:12px;top:11px;width:7px;height:2px;background:#145549;box-shadow:0 4px 0 #145549}.month-nav{height:34px;border:1px solid var(--line);border-radius:5px;background:var(--paper);display:flex;align-items:center;overflow:hidden}.month-nav span{min-width:116px;text-align:center;font:12px "DM Mono",monospace}.month-button{width:32px;height:32px;border:0;background:transparent;color:var(--ink);font-size:20px;cursor:pointer}.month-button:hover{background:var(--accent-soft)}.month-button:disabled{color:#b7c0c1;cursor:not-allowed;background:transparent}</style>
+  </head>
+  <body>
+    <div class="shell">
+      <aside class="sidebar">
+        <a class="brand" href="#" aria-label="轻记首页"><span class="brand-mark" aria-hidden="true"></span><span>轻记</span></a>
+        <nav aria-label="主导航">
+          <a class="nav-item active" href="#overview"><span class="nav-icon">▦</span>总览</a>
+          <a class="nav-item" href="#transactions"><span class="nav-icon">≡</span>消费记录</a>
+          <a class="nav-item" href="#budgets"><span class="nav-icon">◴</span>预算</a>
+        </nav>
+        <div class="sidebar-bottom">
+          <button class="plain-action" id="manageCategories" type="button">管理分类 <span>›</span></button>
+          <button class="profile" type="button"><span class="avatar">吴</span><span><strong>吴同学</strong><small>个人账本</small></span><span class="profile-more">···</span></button>
+        </div>
+      </aside>
+
+      <main>
+        <header class="topbar">
+          <div><p class="eyebrow" id="currentDate">2026 年 9 月 10 日，星期四</p><h1>消费总览</h1></div>
+          <div class="header-actions">
+            <button class="icon-button" id="themeToggle" type="button" title="切换显示主题" aria-label="切换显示主题">◐</button>
+            <label class="import-button" title="导入 CSV 或 Excel 账单"><span>↥</span> 导入账单<input id="fileInput" type="file" accept=".csv,text/csv,.xlsx,.xls,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel" hidden /></label>
+            <button class="add-button" id="addRecord" type="button"><span>＋</span> 添加记录</button>
+          </div>
+        </header>
+
+        <section class="period-row" aria-label="统计周期">
+          <div class="segmented" role="tablist"><button class="period active" data-period="day" role="tab">今日</button><button class="period" data-period="week" role="tab">本周</button><button class="period" data-period="month" role="tab">本月</button></div>
+          <div class="month-nav" aria-label="账单月份切换"><button class="month-button" id="previousMonth" type="button" title="查看上个月" aria-label="查看上个月">‹</button><span id="periodLabel">2026 年 9 月</span><button class="month-button" id="nextMonth" type="button" title="查看下个月" aria-label="查看下个月">›</button></div>
+        </section>
+
+        <section class="metrics" id="overview">
+          <article class="metric"><p>支出</p><strong id="expenseTotal">¥ 0.00</strong><span id="expenseCompare" class="comparison neutral">等待记录</span></article>
+          <article class="metric"><p>收入</p><strong id="incomeTotal">¥ 0.00</strong><span id="incomeCompare" class="comparison positive">本期暂无收入</span></article>
+          <article class="metric"><p>结余</p><strong id="balanceTotal">¥ 0.00</strong><span class="comparison neutral">收入 - 支出</span></article>
+          <article class="metric budget-metric" id="budgets"><button class="text-button budget-edit" id="editBudget" type="button">调整</button><div><p>本月预算</p><strong id="budgetRemaining">¥ 0.00</strong></div><div class="budget-ring"><span id="budgetPercent">0%</span></div><small id="budgetHint">设置预算后开始追踪</small></article>
+        </section>
+
+        <section class="dashboard-grid">
+          <article class="panel trend-panel"><div class="panel-heading"><div><p class="eyebrow">现金流</p><h2>支出趋势</h2></div><span class="legend"><i></i> 支出</span></div><div class="chart" id="trendChart" aria-label="支出趋势图"></div></article>
+          <article class="panel category-panel"><div class="panel-heading"><div><p class="eyebrow">本期分布</p><h2>消费分类</h2></div><button class="text-button" id="showAllCategories" type="button">查看全部</button></div><div class="category-content"><div class="donut" id="donut"><span id="donutAmount">¥0</span><small>支出</small></div><div class="category-list" id="categoryList"></div></div></article>
+        </section>
+
+        <section class="records-section" id="transactions">
+          <div class="records-heading"><div><p class="eyebrow">明细</p><h2>最近消费</h2></div><div class="record-controls"><label class="search"><span>⌕</span><input id="searchInput" type="search" placeholder="搜索记录" /></label><select id="categoryFilter" aria-label="按分类筛选"><option value="all">全部分类</option></select><select id="sortRecords" aria-label="记录排序"><option value="date">按日期排序</option><option value="amount-desc">金额从大到小</option></select><button class="text-button danger-button" id="clearAllRecords" type="button">清空账单</button></div></div>
+          <div class="table-wrap"><table><thead><tr><th>日期</th><th>商户 / 备注</th><th>分类</th><th>账户</th><th class="amount-col">金额</th><th></th></tr></thead><tbody id="recordsBody"></tbody></table><div class="empty-state" id="emptyState" hidden>没有匹配的消费记录</div></div>
+        </section>
+      </main>
+    </div>
+
+    <dialog id="recordDialog"><form method="dialog" id="recordForm"><div class="modal-header"><div><p class="eyebrow">新建记录</p><h2>添加一笔消费</h2></div><button class="close-button" value="cancel" aria-label="关闭">×</button></div><label>商户 / 备注<input name="merchant" required placeholder="例如：星巴克" /></label><div class="form-grid"><label>金额<input name="amount" type="number" min="0.01" step="0.01" required placeholder="0.00" /></label><label>类型<select name="type"><option value="expense">支出</option><option value="income">收入</option></select></label></div><div class="form-grid"><label>日期<input name="date" type="date" value="2026-09-10" required /></label><label>账户<select name="account"><option>微信支付</option><option>银行卡</option><option>现金</option></select></label></div><label>分类<select name="category" id="formCategory"><option value="auto">自动识别</option></select></label><div class="modal-actions"><button class="cancel-button" value="cancel">取消</button><button class="add-button" value="default">保存记录</button></div></form></dialog>
+    <dialog id="importDialog"><form method="dialog"><div class="modal-header"><div><p class="eyebrow">账单导入</p><h2>选择账单来源</h2></div><button class="close-button" value="cancel" aria-label="关闭">×</button></div><div class="source-options"><button class="source-card" id="wechatImport" value="cancel" type="button"><span class="source-icon wechat">微</span><span><strong>微信账单</strong><small>支持微信支付导出的 CSV、XLSX 文件</small></span><b>›</b></button><button class="source-card" id="bankImport" value="cancel" type="button"><span class="source-icon bank">卡</span><span><strong>银行卡账单</strong><small>支持常见 CSV、XLSX 格式</small></span><b>›</b></button></div><p class="import-note">导入后将根据商户名称自动分类，你仍可随时修改。</p></form></dialog>
+    <dialog id="budgetDialog"><form method="dialog" id="budgetForm"><div class="modal-header"><div><p class="eyebrow">预算设置</p><h2>调整本月预算</h2></div><button class="close-button" value="cancel" aria-label="关闭">×</button></div><label>预算金额<input name="budget" type="number" min="0" step="100" required placeholder="例如：4500" /></label><p class="import-note">预算按自然月计算，并保存在当前浏览器中。</p><div class="modal-actions"><button class="cancel-button" value="cancel">取消</button><button class="add-button" value="default">保存预算</button></div></form></dialog>
+    <div class="toast" id="toast" role="status"></div>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
