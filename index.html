@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="个人消费记录工具" />
+    <title>轻记 | 个人消费记录</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+    <style>.danger-button{color:#c45449}.brand-mark{background:#d1f4a2;color:#145549;border-radius:8px;width:30px;height:30px;position:relative;display:block}.brand-mark:before{content:"";position:absolute;left:8px;top:6px;width:11px;height:15px;border:2px solid #145549;border-radius:2px}.brand-mark:after{content:"";position:absolute;left:12px;top:11px;width:7px;height:2px;background:#145549;box-shadow:0 4px 0 #145549}.month-nav{height:34px;border:1px solid var(--line);border-radius:5px;background:var(--paper);display:flex;align-items:center;overflow:hidden}.month-nav span{min-width:116px;text-align:center;font:12px "DM Mono",monospace}.month-button{width:32px;height:32px;border:0;background:transparent;color:var(--ink);font-size:20px;cursor:pointer}.month-button:hover{background:var(--accent-soft)}.month-button:disabled{color:#b7c0c1;cursor:not-allowed;background:transparent}</style>
+    <style>.period-row{gap:12px}.date-query{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:12px;white-space:nowrap}.date-query input{height:34px;border:1px solid var(--line);border-radius:5px;background:var(--paper);color:var(--ink);padding:0 8px;font:12px "DM Mono",monospace}@media(max-width:700px){.period-row{align-items:flex-start;flex-wrap:wrap}}</style>
+    <style>
+      :root{--ink:#173733;--muted:#71857f;--line:#dfe8e3;--paper:#ffffff;--canvas:#f3f6f3;--accent:#0c856c;--accent-soft:#e2f3eb;--coral:#d76555;--gold:#d69a3b;--radius:10px}
+      body{font-family:"Noto Sans SC","Microsoft YaHei",Arial,sans-serif;background:var(--canvas);font-size:14px;line-height:1.45}
+      .sidebar{width:236px;padding:30px 16px 19px;background:#133e3b;box-shadow:8px 0 28px #133e3b10}
+      .brand{padding:0 10px 42px;font-size:22px;letter-spacing:0}.brand-mark{border-radius:8px;width:31px;height:31px;background:#c7f093}
+      .sidebar nav{gap:7px}.nav-item{padding:12px;border-radius:7px}.nav-item.active,.nav-item:hover{background:#28605a}.nav-icon{font-size:16px}
+      main{margin-left:236px;width:calc(100% - 236px);max-width:1580px;padding:36px 46px 52px}.topbar{min-height:52px}.eyebrow{letter-spacing:.8px;color:#78908a;font-size:10px;font-weight:600}h1{font-size:28px;font-weight:700;letter-spacing:0}h2{font-size:18px;font-weight:700}
+      .header-actions{gap:9px}.icon-button,.import-button,.add-button{height:40px;border-radius:7px;transition:transform .16s ease,box-shadow .16s ease,border-color .16s ease}.icon-button,.import-button{border-color:#dbe6e0}.icon-button:hover,.import-button:hover{border-color:#8ebcae;box-shadow:0 5px 13px #1a4c4210}.add-button{box-shadow:0 7px 14px #0c856c2b;padding:0 16px}.add-button:hover{transform:translateY(-1px);box-shadow:0 9px 18px #0c856c38}
+      .period-row{margin:34px 0 24px;justify-content:flex-start}.segmented{padding:4px;background:#e5ece8;border-radius:8px}.period{height:32px;padding:0 18px;border-radius:5px;font-size:13px}.period.active{box-shadow:0 2px 7px #17373314}.date-query{margin-left:12px;font-weight:500}.date-query input{height:36px;border-color:#dbe6e0;border-radius:7px;font-size:12px}.month-nav{margin-left:auto;height:36px;border-color:#dbe6e0;border-radius:7px;box-shadow:0 2px 8px #17373308}.month-button{height:34px}.month-nav span{min-width:128px}
+      .metrics{gap:16px}.metric,.panel,.records-section{border-color:#dfe8e3;box-shadow:0 4px 14px #17373308}.metric{min-height:132px;padding:21px 22px;border-radius:10px}.metric p{font-weight:600;color:#698078}.metric strong{font-size:25px;letter-spacing:0}.budget-ring{width:52px;height:52px;right:20px;top:20px}.budget-ring:before{width:42px;height:42px}.dashboard-grid{gap:16px;margin-top:16px}.panel{border-radius:10px;padding:22px;min-height:300px}.chart{margin-top:22px}.bar{background:#9ed8c7}.records-section{border-radius:10px;margin-top:16px;padding:22px}.record-controls{gap:8px}.search,select{height:36px;border-color:#dbe6e0;border-radius:7px}.search{background:#fbfcfb}.search:focus-within{border-color:#72ad9c;box-shadow:0 0 0 3px #e2f3eb}.text-button{font-weight:600}.danger-button{padding:0 7px}.table-wrap{margin-top:18px}th{padding:11px 8px;color:#7b9088;font-size:11px}td{padding:14px 8px}.pill{padding:4px 8px;border-radius:5px;background:#e9f5ef;color:#27715f}.delete-record{border-radius:5px;width:28px;height:28px;line-height:1;color:#91a39d}.delete-record:hover{background:#fbe8e5;color:#c45143}.empty-state{padding:48px 25px;color:#8a9b95}
+      dialog{border-radius:12px;box-shadow:0 22px 70px #102e2a40}dialog form{padding:25px}.close-button{width:30px;height:30px;border-radius:6px}.close-button:hover{background:#eef4f0;color:var(--ink)}dialog input,dialog select{border-color:#dbe6e0;border-radius:7px}.cancel-button{border-radius:7px}.source-card{border-radius:8px}.toast{border-radius:7px;box-shadow:0 8px 22px #102e2a30}
+      body.dark{--canvas:#102421;--paper:#19332f;--line:#35524b;--ink:#e6f0eb;--muted:#9cb1aa}body.dark .date-query input{background:#19332f;color:var(--ink)}
+      @media(max-width:1000px){.sidebar{width:196px}main{margin-left:196px;width:calc(100% - 196px);padding:30px 28px}.period-row{flex-wrap:wrap}.month-nav{margin-left:0}}
+      @media(max-width:700px){.sidebar{display:none}main{margin:0;width:100%;padding:22px 16px 40px}.topbar{gap:16px;flex-direction:column}.header-actions{width:100%}.import-button,.add-button{flex:1}.period-row{gap:10px;margin:25px 0 18px}.date-query{margin-left:0;width:100%;justify-content:space-between}.date-query input{flex:1;max-width:190px}.month-nav{width:100%;justify-content:space-between}.month-nav span{flex:1}.metrics{gap:10px}.metric{padding:16px;min-height:116px}.metric strong{font-size:20px}.panel,.records-section{padding:16px}}
+    </style>
+    <link rel="stylesheet" href="ui-polish.css" />
+  </head>
+  <body>
+    <div class="shell">
+      <aside class="sidebar">
+        <a class="brand" href="#" aria-label="轻记首页"><span class="brand-mark" aria-hidden="true"></span><span>轻记</span></a>
+        <nav aria-label="主导航">
+          <a class="nav-item active" href="#overview"><span class="nav-icon">▦</span>总览</a>
+          <a class="nav-item" href="#transactions"><span class="nav-icon">≡</span>消费记录</a>
+          <a class="nav-item" href="#budgets"><span class="nav-icon">◴</span>预算</a>
+        </nav>
+        <div class="sidebar-bottom">
+          <button class="plain-action" id="manageCategories" type="button">管理分类 <span>›</span></button>
+          <button class="profile" type="button"><span class="avatar">吴</span><span><strong>吴同学</strong><small>个人账本</small></span><span class="profile-more">···</span></button>
+        </div>
+      </aside>
+
+      <main>
+        <header class="topbar">
+          <div><p class="eyebrow" id="currentDate"></p><h1>消费总览</h1></div>
+          <div class="header-actions">
+            <button class="icon-button" id="themeToggle" type="button" title="切换显示主题" aria-label="切换显示主题">◐</button>
+            <label class="import-button" title="导入 CSV 或 Excel 账单"><span>↥</span> 导入账单<input id="fileInput" type="file" accept=".csv,text/csv,.xlsx,.xls,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel" hidden /></label>
+            <button class="add-button" id="addRecord" type="button"><span>＋</span> 添加记录</button>
+          </div>
+        </header>
+
+        <section class="period-row" aria-label="统计周期">
+          <div class="segmented" role="tablist"><button class="period active" data-period="day" role="tab">日账单</button><button class="period" data-period="week" role="tab">周账单</button><button class="period" data-period="month" role="tab">月账单</button></div>
+          <label class="date-query" for="dateQuery">查询日期<input id="dateQuery" type="date" /></label>
+          <div class="month-nav" aria-label="账单月份切换"><button class="month-button" id="previousMonth" type="button" title="查看上个月" aria-label="查看上个月">‹</button><span id="periodLabel">2026 年 9 月</span><button class="month-button" id="nextMonth" type="button" title="查看下个月" aria-label="查看下个月">›</button></div>
+        </section>
+
+        <section class="metrics" id="overview">
+          <article class="metric"><p>支出</p><strong id="expenseTotal">¥ 0.00</strong><span id="expenseCompare" class="comparison neutral">等待记录</span></article>
+          <article class="metric"><p>收入</p><strong id="incomeTotal">¥ 0.00</strong><span id="incomeCompare" class="comparison positive">本期暂无收入</span></article>
+          <article class="metric"><p>结余</p><strong id="balanceTotal">¥ 0.00</strong><span class="comparison neutral">收入 - 支出</span></article>
+          <article class="metric budget-metric" id="budgets"><button class="text-button budget-edit" id="editBudget" type="button">调整</button><div><p>本月预算</p><strong id="budgetRemaining">¥ 0.00</strong></div><div class="budget-ring"><span id="budgetPercent">0%</span></div><small id="budgetHint">设置预算后开始追踪</small></article>
+        </section>
+
+        <section class="dashboard-grid">
+          <article class="panel trend-panel"><div class="panel-heading"><div><p class="eyebrow">现金流</p><h2>支出趋势</h2></div><span class="legend"><i></i> 支出</span></div><div class="chart" id="trendChart" aria-label="支出趋势图"></div></article>
+          <article class="panel category-panel"><div class="panel-heading"><div><p class="eyebrow">本期分布</p><h2>消费分类</h2></div><button class="text-button" id="showAllCategories" type="button">查看全部</button></div><div class="category-content"><div class="donut" id="donut"><span id="donutAmount">¥0</span><small>支出</small></div><div class="category-list" id="categoryList"></div></div></article>
+        </section>
+
+        <section class="records-section" id="transactions">
+          <div class="records-heading"><div><p class="eyebrow">明细</p><h2>最近消费</h2></div><div class="record-controls"><label class="search"><span>⌕</span><input id="searchInput" type="search" placeholder="搜索记录" /></label><select id="categoryFilter" aria-label="按分类筛选"><option value="all">全部分类</option></select><select id="sortRecords" aria-label="记录排序"><option value="date">按日期排序</option><option value="amount-desc">金额从大到小</option></select><button class="text-button danger-button" id="clearAllRecords" type="button">清空账单</button></div></div>
+          <div class="table-wrap"><table><thead><tr><th>日期</th><th>商户 / 备注</th><th>分类</th><th>账户</th><th class="amount-col">金额</th><th></th></tr></thead><tbody id="recordsBody"></tbody></table><div class="empty-state" id="emptyState" hidden>没有匹配的消费记录</div></div>
+        </section>
+      </main>
+    </div>
+
+    <dialog id="recordDialog"><form method="dialog" id="recordForm"><div class="modal-header"><div><p class="eyebrow">新建记录</p><h2>添加一笔消费</h2></div><button class="close-button" value="cancel" aria-label="关闭">×</button></div><label>商户 / 备注<input name="merchant" required placeholder="例如：星巴克" /></label><div class="form-grid"><label>金额<input name="amount" type="number" min="0.01" step="0.01" required placeholder="0.00" /></label><label>类型<select name="type"><option value="expense">支出</option><option value="income">收入</option></select></label></div><div class="form-grid"><label>日期<input name="date" type="date" required /></label><label>账户<select name="account"><option>微信支付</option><option>银行卡</option><option>现金</option></select></label></div><label>分类<select name="category" id="formCategory"><option value="auto">自动识别</option></select></label><div class="modal-actions"><button class="cancel-button" value="cancel">取消</button><button class="add-button" value="default">保存记录</button></div></form></dialog>
+    <dialog id="importDialog"><form method="dialog"><div class="modal-header"><div><p class="eyebrow">账单导入</p><h2>选择账单来源</h2></div><button class="close-button" value="cancel" aria-label="关闭">×</button></div><div class="source-options"><button class="source-card" id="wechatImport" value="cancel" type="button"><span class="source-icon wechat">微</span><span><strong>微信账单</strong><small>支持微信支付导出的 CSV、XLSX 文件</small></span><b>›</b></button><button class="source-card" id="bankImport" value="cancel" type="button"><span class="source-icon bank">卡</span><span><strong>银行卡账单</strong><small>支持常见 CSV、XLSX 格式</small></span><b>›</b></button></div><p class="import-note">导入后将根据商户名称自动分类，你仍可随时修改。</p></form></dialog>
+    <dialog id="budgetDialog"><form method="dialog" id="budgetForm"><div class="modal-header"><div><p class="eyebrow">预算设置</p><h2>调整本月预算</h2></div><button class="close-button" value="cancel" aria-label="关闭">×</button></div><label>预算金额<input name="budget" type="number" min="0" step="100" required placeholder="例如：4500" /></label><p class="import-note">预算按自然月计算，并保存在当前浏览器中。</p><div class="modal-actions"><button class="cancel-button" value="cancel">取消</button><button class="add-button" value="default">保存预算</button></div></form></dialog>
+    <div class="toast" id="toast" role="status"></div>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
